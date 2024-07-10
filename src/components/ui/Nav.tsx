@@ -1,4 +1,4 @@
-import { NavLink, useActionData } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagHandleSharp } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
