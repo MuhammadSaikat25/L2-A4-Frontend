@@ -4,12 +4,14 @@ import { useAppDispatch } from "../../../redux/hooks";
 import { setUser } from "../../../redux/Feature/auth/authSlice";
 import verifyJwt from "../../../utils/verifyJwt";
 import logo from "../../../assets/images/loging.png";
+import { useNavigate } from "react-router-dom";
 const LoginUl = () => {
   const [email, setEmail] = useState("");
   const dispatch = useAppDispatch();
   const [password, setPassword] = useState("");
-  const [Login] = useLoginMutation();
+  const [Login, { isLoading }] = useLoginMutation();
 
+  const navigate = useNavigate();
   const handelForm = async (e: any) => {
     e.preventDefault();
     const userData = {
@@ -18,8 +20,8 @@ const LoginUl = () => {
     };
     const res = await Login(userData).unwrap();
     const user = await verifyJwt(res.token);
-
     dispatch(setUser({ user, token: res.token }));
+    navigate("/");
   };
 
   return (
@@ -42,9 +44,16 @@ const LoginUl = () => {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="bg-blue-600 rounded-3xl px-4 text-white">
-            Login
-          </button>
+          {isLoading ? (
+            <p className="text-white text-center">loading...</p>
+          ) : (
+            <button
+              disabled={email.length === 0 && password.length === 0}
+              className="bg-blue-600 rounded-3xl px-4 text-white"
+            >
+              Login
+            </button>
+          )}
         </form>
       </div>
     </div>

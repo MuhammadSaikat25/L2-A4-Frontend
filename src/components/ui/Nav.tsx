@@ -31,6 +31,12 @@ const Nav = () => {
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
+            to={"/products"}
+          >
+            Products
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
             to={"/Product-Management"}
           >
             Product Management

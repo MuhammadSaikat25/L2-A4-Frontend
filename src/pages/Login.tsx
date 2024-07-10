@@ -1,4 +1,4 @@
-import LoginUl from "../components/ui/Auth/Login";
+import LoginUl from "../components/ui/Auth/LoginUI";
 
 const Login = () => {
   return (
