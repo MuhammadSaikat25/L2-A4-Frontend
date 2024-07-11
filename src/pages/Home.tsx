@@ -3,7 +3,7 @@ import CatagoriesUl from "../components/ui/Home/CatagoriesUl";
 import { useGetProductsQuery } from "../redux/Feature/products/productsApi";
 
 const Home = () => {
-  const { data: products } = useGetProductsQuery(undefined);
+  // const { data: products } = useGetProductsQuery(undefined);
 
   return (
     <div>

@@ -12,8 +12,8 @@ const CatagoriesUl = () => {
     _id: string;
   }
 
-  const handleCategoryClick = (categoryId: string) => {
-    navigate(`/products/${categoryId}`);
+  const handleCategoryClick = (id: string) => {
+    navigate(`products/${id}`);
   };
 
   return (
