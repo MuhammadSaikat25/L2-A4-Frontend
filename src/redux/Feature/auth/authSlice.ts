@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+ interface User{
+  [key:string]:string
+}
 export interface TUser {
-  user: null | object;
+  user: null | User;
   token: null | string;
 }
 const initialState: TUser = {

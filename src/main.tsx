@@ -9,6 +9,7 @@ import { persistor, store } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
+import ProductsDetails from "./pages/ProductsDetails";
 
 const router = createBrowserRouter([
   {
@@ -19,10 +20,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home></Home>,
       },
-      // {
-      //   path:'/products',
-      //   element:<Products/>
-      // },
+      {
+        path:'/productsDetails',
+        element:<ProductsDetails/>
+      },
       {
         path:"products/:id?",
         element:<Products/>
