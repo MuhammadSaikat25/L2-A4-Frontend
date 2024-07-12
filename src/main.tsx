@@ -10,6 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import ProductsDetails from "./pages/ProductsDetails";
+import Cart from "./pages/Cart";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path:'/productsDetails',
         element:<ProductsDetails/>
+      },
+      {
+        path:'/cart',
+        element:<Cart/>
       },
       {
         path:"products/:id?",

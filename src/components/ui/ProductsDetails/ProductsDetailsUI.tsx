@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const ProductsDetailsUI = () => {
   const [pro, setPro] = useState([]);
-  const [productId,setProductId]=useState('')
+  const [productId, setProductId] = useState("");
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
   const { data } = useGetProductsQuery(undefined);
   const [addToCart] = useAddToCartMutation();
@@ -31,11 +31,20 @@ const ProductsDetailsUI = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const handelAddToCart = async (productId: string, name: string) => {
-    setProductId(productId)
+  const handelAddToCart = async (
+    productId: string,
+    name: string,
+    productQuantity: any,
+    image: string,
+    price: any
+  ) => {
+    setProductId(productId);
     addToCart({
+      productQuantity,
       name,
+      price,
       productId,
+      image,
       quantity: 1,
       user: loginUser?.email as string,
     });
@@ -55,9 +64,7 @@ const ProductsDetailsUI = () => {
       }
     });
   };
-  let localData=localStorage.getItem('cart')
-  // let a=localData.filter()
-  console.log(localData)
+
   return (
     <div className="">
       <ToastContainer />
@@ -79,7 +86,15 @@ const ProductsDetailsUI = () => {
               </div>
               <button
                 disabled={data.availableQuantity === data.quantity}
-                onClick={() => handelAddToCart(data._id, data.name)}
+                onClick={() =>
+                  handelAddToCart(
+                    data._id,
+                    data.name,
+                    data.quantity,
+                    data.image,
+                    data.price
+                  )
+                }
                 className="bg-emerald-700 w-[90%] rounded text-white absolute bottom-2 text-center "
               >
                 Add To Cart

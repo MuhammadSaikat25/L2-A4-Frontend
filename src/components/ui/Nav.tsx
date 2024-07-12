@@ -50,7 +50,7 @@ const Nav = () => {
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-            to={"/Cart-Page"}
+            to={"/cart"}
           >
             Cart
           </NavLink>
@@ -131,7 +131,7 @@ const Nav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-              to={"/Cart-Page"}
+              to={"/cart"}
             >
               Cart
             </NavLink>
