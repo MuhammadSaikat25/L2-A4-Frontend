@@ -6,12 +6,17 @@ import logo from "../../assets/images/logo.png";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-
+import { useAppDispatch } from "../../redux/hooks";
+import { logOut } from "../../redux/Feature/auth/authSlice";
 
 const Nav = () => {
   const [authBtn, setAuthBtn] = useState(false);
   const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
+  const handelLogOut = () => {
+    dispatch(logOut());
+  };
   return (
     <nav className="bg-gray-700 p-6 relative">
       <div className="text-white hidden lg:flex lg:justify-between items-center">
@@ -73,26 +78,35 @@ const Nav = () => {
           <IoBagHandleSharp size={20} />
         </div>
       </div>
-      {/* --------------- mobile-------------- */}
 
       {authBtn && (
         <div className="absolute bg-gray-400 top-16 right-10 px-4 rounded-md py-2 font-semibold">
           {user ? (
-            <NavLink to={""}>logout</NavLink>
+            <button onClick={() => handelLogOut()}>logout</button>
           ) : (
-            <NavLink to={"/login"}>Login</NavLink>
+          <div className="flex items-center gap-2">
+              <NavLink to={"/login"}>Login</NavLink>
+              <h1>/</h1>
+              <NavLink to={"/singup"}>Registration</NavLink>
+          </div>
           )}
         </div>
       )}
-
-      <div className="lg:hidden">
+      {/* --------------- mobile-------------- */}
+      <div className="flex items-center justify-between lg:hidden">
         <span onClick={() => setOpen(!open)}>
           {open ? (
-            <IoCloseCircleOutline size={30} color="white"></IoCloseCircleOutline>
+            <IoCloseCircleOutline
+              size={30}
+              color="white"
+            ></IoCloseCircleOutline>
           ) : (
-            <CiMenuFries size={30} color="white"></CiMenuFries>
+            <CiMenuFries  size={30} color="white"></CiMenuFries>
           )}
         </span>
+        <div className="flex items-center gap-6 cursor-pointer">
+          <FaUser color="white" onClick={() => setAuthBtn(!authBtn)} size={20} />
+        </div>
       </div>
       {open && (
         <div className=" lg:hidden ">
@@ -137,7 +151,7 @@ const Nav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-              to={"/Checkout-page"}
+              to={"/checkout"}
             >
               Checkout
             </NavLink>

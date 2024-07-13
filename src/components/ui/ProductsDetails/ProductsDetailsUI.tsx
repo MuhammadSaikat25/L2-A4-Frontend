@@ -11,10 +11,11 @@ const ProductsDetailsUI = () => {
   const [pro, setPro] = useState([]);
   const [productId, setProductId] = useState("");
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
-  const { data } = useGetProductsQuery(undefined);
+  const { data, refetch } = useGetProductsQuery(undefined);
   const [addToCart] = useAddToCartMutation();
   const [proId, setProId] = useState(1);
   useEffect(() => {
+    refetch();
     setPro(data?.data);
   }, [data?.data, proId]);
 
@@ -67,9 +68,8 @@ const ProductsDetailsUI = () => {
 
   return (
     <div className="">
-   
       <ToastContainer />
-      <div className="grid grid-cols-3 mt-2 mx-auto gap-3 lg:w-[1200px] mb-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 mt-2 mx-auto gap-3 lg:w-[1200px] mb-3">
         {pro?.map((data: TProducts, i: number) => (
           <div key={i} className="relative">
             <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer">

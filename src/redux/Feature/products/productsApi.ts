@@ -34,6 +34,41 @@ const productsApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getProductsById: builder.query({
+      query: (id: string) => {
+        return {
+          url: `/get-product/${id}`,
+          method: "GET",
+        };
+      },
+    }),
+    updateProducts: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/update-product/${data.id}`,
+          method: "PATCH",
+          body: data.updateData,
+        };
+      },
+    }),
+    carateProduct: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/create-products`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    deleteProduct: builder.mutation({
+      query: (id: string) => {
+        console.log(id)
+        return {
+          url: `/delete-product/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 
@@ -42,4 +77,8 @@ export const {
   useGetProductsBaseOnSingleCategoriesQuery,
   useGetProductsBaseOnMultipleCategoriesMutation,
   useGetProductsByNameQuery,
+  useGetProductsByIdQuery,
+  useUpdateProductsMutation,
+  useCarateProductMutation,
+  useDeleteProductMutation
 } = productsApi;

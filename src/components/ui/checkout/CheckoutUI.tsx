@@ -6,12 +6,14 @@ import { TCart } from "../../../@types/carts";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { usePostOrderMutation } from "../../../redux/Feature/Order/orderApi";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutUI = () => {
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
   const { data, refetch } = useGetUserCheckoutDataQuery(loginUser?.email);
   const [cart, setCart] = useState<TCart[]>([]);
   const [postOrder] = usePostOrderMutation();
+  const navigate = useNavigate();
   useEffect(() => {
     refetch();
     if (data) {
@@ -24,6 +26,7 @@ const CheckoutUI = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [cashOnDelivery, setCashOnDelivery] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (cashOnDelivery === false) {
@@ -35,13 +38,13 @@ const CheckoutUI = () => {
         name,
         phone,
         address,
-        total_cost:Number(Price * quantity )
+        total_cost: Number(Price * quantity),
       },
       product: cart,
       payments_type: "Cash on delivery",
     });
-    console.log(cart)
-    toast("Order has been Booked")
+    toast("Order has been Booked");
+    navigate("/success");
   };
 
   const Price = cart?.reduce((pre, curr) => pre + curr.price, 0);
@@ -134,6 +137,7 @@ const CheckoutUI = () => {
           <div className="text-center">
             <button
               type="submit"
+              disabled={cart?.length===0}
               className="px-6 py-2 w-full bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Place Order

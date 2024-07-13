@@ -1,28 +1,26 @@
 import { useState } from "react";
-import { useLoginMutation } from "../../../redux/Feature/auth/authApi";
-import { useAppDispatch } from "../../../redux/hooks";
-import { setUser } from "../../../redux/Feature/auth/authSlice";
-import verifyJwt from "../../../utils/verifyJwt";
-import logo from "../../../assets/images/loging.png";
+import { useAppDispatch } from "../redux/hooks";
+import { useRegistrationMutation } from "../redux/Feature/auth/authApi";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/images/loging.png";
 
-const LoginUl = () => {
+const Registration = () => {
   const [email, setEmail] = useState("");
-  const dispatch = useAppDispatch();
-  const [password, setPassword] = useState("");
-  const [Login, { isLoading }] = useLoginMutation();
+  const [name, setName] = useState("");
 
+  const [password, setPassword] = useState("");
+  const [registration, { isLoading }] = useRegistrationMutation();
   const navigate = useNavigate();
+
   const handelForm = async (e: any) => {
     e.preventDefault();
     const userData = {
+      name,
       email,
       password,
     };
-    const res = await Login(userData).unwrap();
-    const user = await verifyJwt(res.token);
-    dispatch(setUser({ user, token: res.token }));
-    navigate("/");
+    await registration(userData).unwrap();
+    navigate("/login");
   };
 
   return (
@@ -35,8 +33,14 @@ const LoginUl = () => {
         >
           <input
             className="border  rounded-3xl px-3 w-full"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             type="text"
+            placeholder="Name"
+          />
+          <input
+            className="border  rounded-3xl px-3 w-full"
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
             placeholder="Email"
           />
           <input
@@ -52,7 +56,7 @@ const LoginUl = () => {
               disabled={email.length === 0 && password.length === 0}
               className="bg-blue-600 rounded-3xl px-4 text-white"
             >
-              Login
+              Registration
             </button>
           )}
         </form>
@@ -61,4 +65,4 @@ const LoginUl = () => {
   );
 };
 
-export default LoginUl;
+export default Registration;

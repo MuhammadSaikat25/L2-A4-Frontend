@@ -46,6 +46,7 @@ const CartUI = () => {
     // updatedCart.splice(index, 1);
     // setCart(updatedCart);
     setDeleteModal(index);
+    refetch()
   };
 
   useEffect(() => {
