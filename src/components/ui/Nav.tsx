@@ -67,7 +67,7 @@ const Nav = () => {
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-            to={"/About-Page"}
+            to={"/about-us"}
           >
             About Us
           </NavLink>

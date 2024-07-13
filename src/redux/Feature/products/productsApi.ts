@@ -26,11 +26,11 @@ const productsApi = baseApi.injectEndpoints({
         };
       },
     }),
-    getProductsByName: builder.query({
+    getProductsByName: builder.mutation({
       query: (name: string) => {
         return {
-          url: `get-products-${name}`,
-          method: "GET",
+          url: `/get-products/${name}`,
+          method: "POST",
         };
       },
     }),
@@ -76,7 +76,7 @@ export const {
   useGetProductsQuery,
   useGetProductsBaseOnSingleCategoriesQuery,
   useGetProductsBaseOnMultipleCategoriesMutation,
-  useGetProductsByNameQuery,
+  useGetProductsByNameMutation,
   useGetProductsByIdQuery,
   useUpdateProductsMutation,
   useCarateProductMutation,

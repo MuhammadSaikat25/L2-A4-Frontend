@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
+import { IoMdSearch } from "react-icons/io";
+
 import {
   useGetProductsBaseOnMultipleCategoriesMutation,
   useGetProductsBaseOnSingleCategoriesQuery,
-  useGetProductsByNameQuery,
+  useGetProductsByNameMutation,
   useGetProductsQuery,
 } from "../../../redux/Feature/products/productsApi";
 import { TProducts } from "../../../@types/Products";
@@ -21,12 +23,13 @@ const ProductsUI = () => {
   const singleCategoryQuery = id
     ? useGetProductsBaseOnSingleCategoriesQuery(id)
     : null;
+
   // ! check if id(categories) are available then products will fetch base on that id (categories), or if id(categories) not available then by default all products will fetch
   const productsQuery = !id ? useGetProductsQuery(undefined) : null;
   const data = id ? singleCategoryQuery?.data : productsQuery?.data;
-  // const dat = search ? useGetProductsByNameQuery (search): null;
-  // console.log(search)
-  // console.log(dat)
+  const [getProductsByName, { data: searchProduct }] =
+    useGetProductsByNameMutation();
+  
   const [getProductsBaseOnMultipleCategories, { data: FilterProducts }] =
     useGetProductsBaseOnMultipleCategoriesMutation();
   // ! set useEffect for get filter's products
@@ -50,6 +53,12 @@ const ProductsUI = () => {
         : prevSelected.filter((item) => item !== name)
     );
   };
+  const handelSearch = async () => {
+    getProductsByName(search);
+    setProducts(searchProduct?.data);
+  };
+  
+
   return (
     <div className="relative mt-2">
       <div className="pl-2 flex justify-around items-center">
@@ -59,6 +68,11 @@ const ProductsUI = () => {
             placeholder="Search products"
             type="text"
             className="border border-black rounded-2xl   px-2"
+          />
+          <IoMdSearch
+            className="cursor-pointer"
+            onClick={handelSearch}
+            size={25}
           />
         </div>
         <div className="">

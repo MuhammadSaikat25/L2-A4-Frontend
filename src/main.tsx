@@ -18,6 +18,7 @@ import Private from "./components/Private/Private";
 import ProductsManagement from "./pages/ProductsManagement";
 import ProductEdit from "./components/ui/ProductsManagement/ProductEdit";
 import CreateProduct from "./components/ui/ProductsManagement/CreateProduct";
+import AboutUs from "./pages/AboutUs";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path:"/create-product",
         element:<CreateProduct/>
+      },
+      {
+        path:'about-us',
+        element:<AboutUs/>
       }
     ],
   },
