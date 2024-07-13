@@ -56,7 +56,7 @@ const Nav = () => {
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-            to={"/Checkout-page"}
+            to={"/checkout"}
           >
             Checkout
           </NavLink>

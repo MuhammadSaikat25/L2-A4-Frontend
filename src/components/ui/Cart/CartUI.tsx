@@ -8,6 +8,8 @@ import {
 } from "../../../redux/Feature/Cart/cartApi";
 import { TCart } from "../../../@types/carts";
 import { RootState } from "../../../redux/store";
+import { useCheckoutMutation } from "../../../redux/Feature/checkout/checkoutApi";
+import { Link } from "react-router-dom";
 
 const CartUI = () => {
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
@@ -15,9 +17,9 @@ const CartUI = () => {
   const [deleteCart] = useDeleteCartMutation();
   const [increment] = useIncrementMutation();
   const [decrement] = useDecrementMutation();
+  const [checkout] = useCheckoutMutation();
   const [cart, setCart] = useState<TCart[]>([]);
   const [deleteModal, setDeleteModal] = useState("");
-
   const handleIncrement = (index: number, id: string) => {
     increment(id);
     refetch();
@@ -58,6 +60,7 @@ const CartUI = () => {
         productQuantity: product.productQuantity,
         user: product.user,
         _id: product._id,
+        productId: product.productId,
       }))
     );
   }, [data?.data]);
@@ -68,61 +71,72 @@ const CartUI = () => {
     deleteCart(id);
     refetch();
   };
-  return (
-   <div className="">
-    {
-      cart?.length ? <div className="cart-container p-3 relative">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-[90%] mx-auto">
-        {cart?.map((item, index) => (
-          <div
-            key={item.id}
-            className="cart-item rounded-md border p-2 mx-a bg-gray-300"
-          >
-            <img
-              className="w-[100px] mx-auto"
-              src={item.image}
-              alt={item.name}
-            />
-            <div className="item-details  text-center">
-              <h3>{item.name}</h3>
-              <p>Price: ${item.price}</p>
+  const checkoutHandler = () => {
+    const checkoutData = [...cart];
 
-              <div className="flex items-center gap-4 justify-center ">
-                <button
-                  className="text-2xl"
-                  onClick={() => handleDecrement(index, item._id)}
-                >
-                  -
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  disabled={item.quantity === item.productQuantity}
-                  className="text-2xl"
-                  onClick={() => handleIncrement(index, item._id)}
-                >
-                  +
-                </button>
-              </div>
-              <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
-              <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
-              {deleteModal === item.id && (
-                <div className="modal absolute top-[300px] left-[750px] flex items-center gap-3 bg-slate-800 text-white p-2 rounded-md">
-                  <button onClick={() => deleteCartFormBD(item._id)}>
-                    Sure
+    checkout(checkoutData);
+  };
+  return (
+    <div className="">
+      {cart?.length ? (
+        <div className="cart-container p-3 relative">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-[90%] mx-auto">
+            {cart?.map((item, index) => (
+              <div
+                key={item.id}
+                className="cart-item rounded-md border p-2 mx-a bg-gray-300"
+              >
+                <img
+                  className="w-[100px] mx-auto"
+                  src={item.image}
+                  alt={item.name}
+                />
+                <div className="item-details  text-center">
+                  <h3>{item.name}</h3>
+                  <p>Price: ${item.price}</p>
+
+                  <div className="flex items-center gap-4 justify-center ">
+                    <button
+                      className="text-2xl"
+                      onClick={() => handleDecrement(index, item._id)}
+                    >
+                      -
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      disabled={item.quantity === item.productQuantity}
+                      className="text-2xl"
+                      onClick={() => handleIncrement(index, item._id)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                  <button onClick={() => handleRemoveItem(item._id)}>
+                    Remove
                   </button>
-                  <button onClick={() => handleRemoveItem(null)}>No</button>
+                  {deleteModal === item.id && (
+                    <div className="modal absolute top-[300px] left-[750px] flex items-center gap-3 bg-slate-800 text-white p-2 rounded-md">
+                      <button onClick={() => deleteCartFormBD(item._id)}>
+                        Sure
+                      </button>
+                      <button onClick={() => handleRemoveItem(null)}>No</button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <h1 className="bg-red-600 lg:w-[400px] text-center p-1 rounded mx-auto mt-4 cursor-pointer text-white">
-        Proceed to checkout ${(quantity * Price).toFixed(2)}
-      </h1>
-    </div>: <h1 className="flex items-center justify-center mt-5">No data found</h1>
-    }
-   </div>
+          <h1 className="bg-red-600 lg:w-[400px] text-center p-1 rounded mx-auto mt-7 cursor-pointer text-white">
+            <Link to={"/checkout"} onClick={() => checkoutHandler()}>
+              Proceed to checkout ${(quantity * Price).toFixed(2)}
+            </Link>
+          </h1>
+        </div>
+      ) : (
+        <h1 className="flex items-center justify-center mt-5">No data found</h1>
+      )}
+    </div>
   );
 };
 

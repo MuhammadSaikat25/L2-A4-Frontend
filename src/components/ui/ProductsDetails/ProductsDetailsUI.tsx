@@ -67,6 +67,7 @@ const ProductsDetailsUI = () => {
 
   return (
     <div className="">
+   
       <ToastContainer />
       <div className="grid grid-cols-3 mt-2 mx-auto gap-3 lg:w-[1200px] mb-3">
         {pro?.map((data: TProducts, i: number) => (
