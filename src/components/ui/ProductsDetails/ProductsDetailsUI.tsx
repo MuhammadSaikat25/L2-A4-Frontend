@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
-import { useGetProductsQuery } from "../../../redux/Feature/products/productsApi";
+import {
+  useGetProductsByIdQuery,
+  useGetProductsQuery,
+} from "../../../redux/Feature/products/productsApi";
 import { TProducts } from "../../../@types/Products";
 import { useAddToCartMutation } from "../../../redux/Feature/Cart/cartApi";
 import { useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { NavLink, useParams } from "react-router-dom";
 
 const ProductsDetailsUI = () => {
+  const { id } = useParams();
+  const { data: singData } = useGetProductsByIdQuery(id!, { skip: !id });
   const [pro, setPro] = useState([]);
-  const [productId, setProductId] = useState("");
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
   const { data, refetch } = useGetProductsQuery(undefined);
   const [addToCart] = useAddToCartMutation();
@@ -39,7 +44,6 @@ const ProductsDetailsUI = () => {
     image: string,
     price: any
   ) => {
-    setProductId(productId);
     addToCart({
       productQuantity,
       name,
@@ -65,45 +69,68 @@ const ProductsDetailsUI = () => {
       }
     });
   };
-
+  console.log(singData);
   return (
     <div className="">
       <ToastContainer />
-      <div className="grid grid-cols-1 lg:grid-cols-3 mt-2 mx-auto gap-3 lg:w-[1200px] mb-3">
-        {pro?.map((data: TProducts, i: number) => (
-          <div key={i} className="relative">
-            <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer">
-              <img
-                className="w-[100px] mx-auto h-[100px]"
-                src={data.image}
-                alt=""
-              />
-              <div className="text-center text-gray-950">
-                <h1>Name: {data.name}</h1>
-                <h1>price: ${data.price}</h1>
-                <h1>Quantity: {data.quantity}</h1>
-                <h1>Categories:{data.categories[0]}</h1>
-                <h1> {data.description.slice(0, 150)}</h1>
+      {!singData ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 mt-2 mx-auto gap-3 lg:w-[1200px] mb-3">
+          {pro?.map((data: TProducts, i: number) => (
+            <div key={i} className="relative">
+              <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer">
+                <img
+                  className="w-[100px] mx-auto h-[100px]"
+                  src={data.image}
+                  alt=""
+                />
+                <div className="text-center text-gray-950">
+                  <h1>Name: {data.name}</h1>
+                  <h1>price: ${data.price}</h1>
+                  <h1>Quantity: {data.quantity}</h1>
+                  <h1>Categories:{data.categories[0]}</h1>
+                  <h1> {data.description.slice(0, 150)}</h1>
+                </div>
+                <button
+                  disabled={data.availableQuantity === data.quantity}
+                  onClick={() =>
+                    handelAddToCart(
+                      data._id,
+                      data.name,
+                      data.quantity,
+                      data.image,
+                      data.price
+                    )
+                  }
+                  className="bg-emerald-700 w-[90%] rounded text-white absolute bottom-2 text-center "
+                >
+                  Add To Cart
+                </button>
               </div>
-              <button
-                disabled={data.availableQuantity === data.quantity}
-                onClick={() =>
-                  handelAddToCart(
-                    data._id,
-                    data.name,
-                    data.quantity,
-                    data.image,
-                    data.price
-                  )
-                }
-                className="bg-emerald-700 w-[90%] rounded text-white absolute bottom-2 text-center "
-              >
-                Add To Cart
-              </button>
             </div>
+          ))}
+        </div>
+      ) : (
+        <div className="">
+          <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer">
+            <img
+              className="w-[100px] mx-auto h-[100px]"
+              src={singData.data.image}
+              alt=""
+            />
+            <div className="text-center text-gray-950">
+              <h1>Name: {singData.data.name}</h1>
+              <h1>price: ${singData.data.price}</h1>
+              <h1>Quantity: {singData.data.quantity}</h1>
+              <h1>Categories:{singData.data.categories[0]}</h1>
+              <h1> {singData.data.description.slice(0, 150)}</h1>
+            </div>
+
+            <h1 className="bg-blue-500 w-fit mx-auto mt-2">
+              <NavLink to={"/products"}>Explore more</NavLink>
+            </h1>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,7 +15,7 @@ import { TCategories } from "../../../@types/categories";
 const ProductsUI = () => {
   const { id } = useParams();
   const [product, setProducts] = useState([]);
-
+  const { data: value, refetch } = useGetProductsQuery(undefined);
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -29,7 +29,7 @@ const ProductsUI = () => {
   const data = id ? singleCategoryQuery?.data : productsQuery?.data;
   const [getProductsByName, { data: searchProduct }] =
     useGetProductsByNameMutation();
-  
+
   const [getProductsBaseOnMultipleCategories, { data: FilterProducts }] =
     useGetProductsBaseOnMultipleCategoriesMutation();
   // ! set useEffect for get filter's products
@@ -57,8 +57,16 @@ const ProductsUI = () => {
     getProductsByName(search);
     setProducts(searchProduct?.data);
   };
-  
-
+  useEffect(() => {
+    if (searchProduct?.data) {
+      setProducts(searchProduct?.data);
+    }
+  }, [searchProduct]);
+  const handelClear = () => {
+    setModal(false);
+    refetch();
+    value;
+  };
   return (
     <div className="relative mt-2">
       <div className="pl-2 flex justify-around items-center">
@@ -95,6 +103,12 @@ const ProductsUI = () => {
                   <label htmlFor={data.name}>{data.name}</label>
                 </div>
               ))}
+              <button
+                onClick={() => handelClear()}
+                className="text-white bg-red-700"
+              >
+                Clear Filter
+              </button>
             </div>
           )}
         </div>
