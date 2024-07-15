@@ -127,6 +127,7 @@ const ProductsDetailsUI = () => {
 
             <h1 className="bg-blue-500 w-fit mx-auto mt-2">
               <NavLink to={"/products"}>Explore more</NavLink>
+        
             </h1>
           </div>
         </div>
