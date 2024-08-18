@@ -4,9 +4,10 @@ import { IoMdSearch } from "react-icons/io";
 
 import {
   useGetProductsBaseOnMultipleCategoriesMutation,
-  useGetProductsBaseOnSingleCategoriesQuery,
+  useGetProductsBaseOnSingleCategoriesQuery as ProductsBaseOnSingleCategories,
   useGetProductsByNameMutation,
   useGetProductsQuery,
+  useGetMaxPriceQuery,
 } from "../../../redux/Feature/products/productsApi";
 import { useGetCategoriesQuery } from "../../../redux/Feature/Categories/categoriesApi";
 import { TProducts } from "../../../@types/Products";
@@ -14,37 +15,25 @@ import { TCategories } from "../../../@types/categories";
 
 const ProductsUI = () => {
   const { id } = useParams();
-  const [maxPrice, setMaxPrice] = useState(0);
+
+  const { data: maxPrice } = useGetMaxPriceQuery(undefined);
+
   const [products, setProducts] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { data: categories } = useGetCategoriesQuery(undefined);
   const [sortByPrice, setSortByPrice] = useState("ascending");
-  const { data: categoriesBaseProducts } =
-    useGetProductsBaseOnSingleCategoriesQuery(
-      { name: id!, sort: sortByPrice },
-      { skip: !id }
-    );
-
+  const { data: categoriesBaseProducts } = ProductsBaseOnSingleCategories(
+    { name: id!, sort: sortByPrice },
+    { skip: !id }
+  );
   const { data: product, refetch } = useGetProductsQuery(sortByPrice);
-  const [getProductsByName, { data: searchProduct }] =
-    useGetProductsByNameMutation();
-  const [
-    getProductsBaseOnMultipleCategories,
-    { data: FilterProducts, isSuccess },
-  ] = useGetProductsBaseOnMultipleCategoriesMutation();
 
-  useEffect(() => {
-    if (selectedCategories.length > 0) {
-      getProductsBaseOnMultipleCategories(selectedCategories);
-    }
-    setProducts(FilterProducts?.data);
-  }, [selectedCategories, getProductsBaseOnMultipleCategories]);
-
-  useEffect(() => {
-    id ? setProducts(categoriesBaseProducts?.data) : setProducts(product?.data);
-  }, [product?.data, categoriesBaseProducts?.data]);
+  const [getProductsByName] = useGetProductsByNameMutation();
+  const [getProductsBaseOnMultipleCategories, { data: categoriesProducts }] =
+    useGetProductsBaseOnMultipleCategoriesMutation();
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -56,19 +45,11 @@ const ProductsUI = () => {
   };
 
   const handelSearch = async () => {
-    getProductsByName(search);
-    setProducts(searchProduct?.data);
+    if (!search) return;
+    const searchProducts = await getProductsByName(search);
+    setProducts(searchProducts?.data.data);
   };
 
-  useEffect(() => {
-    if (searchProduct?.data) {
-      setProducts(searchProduct?.data);
-    }
-  }, [searchProduct]);
-  useEffect(() => {
-    
-    setProducts(FilterProducts?.data);
-  }, [FilterProducts]);
   const handelClear = () => {
     setModal(false);
     refetch();
@@ -82,14 +63,55 @@ const ProductsUI = () => {
     setModal(false);
   };
 
-  // useEffect(() => {
-  //   if(product){
-  //     setMaxPrice(Math.max(...products?.map((product: any) => product?.price)));
-  //   }
-  // }, [products]);
-    useEffect(()=>{
-      setProducts(product?.data)
-    },[product])
+  const handelPriceRange = (e: any) => {
+    const currentRange = e.target.value;
+    setPriceRange([0, currentRange]);
+  };
+  useEffect(() => {
+    setPriceRange([0, maxPrice?.maxPrice]);
+  }, [maxPrice]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      let filteredProducts = product?.data || [];
+
+      if (selectedCategories.length > 0) {
+        const filterByCategories = await getProductsBaseOnMultipleCategories(
+          selectedCategories
+        );
+        filteredProducts = filterByCategories?.data?.data || [];
+      } else if (id) {
+        filteredProducts = categoriesBaseProducts?.data || [];
+      }
+
+      setProducts(filteredProducts);
+    };
+
+    fetchProducts();
+  }, [product, selectedCategories, categoriesBaseProducts, id]);
+
+  useEffect(() => {
+    if (selectedCategories.length) {
+      const categoriesBaseProducts = categoriesProducts?.data || [];
+      const categoriesBaseProductsWithPriceRange =
+        categoriesBaseProducts.filter(
+          (product: any) =>
+            product.price >= priceRange[0] && product.price <= priceRange[1]
+        );
+      setProducts(categoriesBaseProductsWithPriceRange);
+    }
+  }, [priceRange, categoriesProducts]);
+  useEffect(() => {
+    if (!selectedCategories.length && priceRange[1] < maxPrice?.maxPrice) {
+      const allProducts = product?.data || [];
+      const priceRangeProducts = allProducts.filter(
+        (product: any) =>
+          product.price >= priceRange[0] && product.price <= priceRange[1]
+      );
+      setProducts(priceRangeProducts);
+    }
+  }, [priceRange, selectedCategories]);
+
   return (
     <div className="relative mt-2">
       <div className="pl-2 flex justify-around items-center">
@@ -137,10 +159,13 @@ const ProductsUI = () => {
                 <input
                   type="range"
                   min="0"
-                  max={maxPrice}
+                  value={priceRange[1]}
+                  max={maxPrice?.maxPrice + 100}
                   className="slider"
+                  onChange={handelPriceRange}
                   data-index="0"
                 />
+                <p>Price: {priceRange[1]}</p>
               </div>
               <div className="bg-gray-600 mt-2 p-1 rounded">
                 <label htmlFor="sort-price">Sort by Price: </label>

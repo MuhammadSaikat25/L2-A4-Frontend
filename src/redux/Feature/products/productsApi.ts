@@ -64,13 +64,21 @@ const productsApi = baseApi.injectEndpoints({
     }),
     deleteProduct: builder.mutation({
       query: (id: string) => {
-        console.log(id);
+       
         return {
           url: `/delete-product/${id}`,
           method: "DELETE",
         };
       },
     }),
+    getMaxPrice:builder.query({
+      query:()=>{
+        return {
+          url:"/get-maxPrice",
+          method:"GET"
+        }
+      }
+    })
   }),
 });
 
@@ -83,4 +91,5 @@ export const {
   useUpdateProductsMutation,
   useCarateProductMutation,
   useDeleteProductMutation,
+  useGetMaxPriceQuery
 } = productsApi;
