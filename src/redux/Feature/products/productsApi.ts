@@ -3,15 +3,17 @@ import { baseApi } from "../../api/baseApi";
 const productsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: () => ({
-        url: "/products",
-        method: "GET",
-      }),
+      query: (sort) => {
+        return {
+          url: `products${sort ? `?sort=${sort}` : ""}`,
+          method: "GET",
+        };
+      },
     }),
     getProductsBaseOnSingleCategories: builder.query({
-      query: (name) => {
+      query: ({ name, sort }) => {
         return {
-          url: `/get-products/${name}`,
+          url: `/get-products/${name}${sort ? `?sort=${sort}` : ""}`,
           method: "GET",
           params: name,
         };
@@ -62,7 +64,7 @@ const productsApi = baseApi.injectEndpoints({
     }),
     deleteProduct: builder.mutation({
       query: (id: string) => {
-        console.log(id)
+        console.log(id);
         return {
           url: `/delete-product/${id}`,
           method: "DELETE",
@@ -80,5 +82,5 @@ export const {
   useGetProductsByIdQuery,
   useUpdateProductsMutation,
   useCarateProductMutation,
-  useDeleteProductMutation
+  useDeleteProductMutation,
 } = productsApi;

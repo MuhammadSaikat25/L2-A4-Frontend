@@ -69,7 +69,7 @@ const ProductsDetailsUI = () => {
       }
     });
   };
-  console.log(singData);
+
   return (
     <div className="">
       <ToastContainer />
@@ -111,7 +111,7 @@ const ProductsDetailsUI = () => {
         </div>
       ) : (
         <div className="">
-          <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer">
+          <div className="border border-black relative h-[320px] rounded-lg p-3 cursor-pointer w-fit mx-auto mt-5 ">
             <img
               className="w-[100px] mx-auto h-[100px]"
               src={singData.data.image}
@@ -125,9 +125,8 @@ const ProductsDetailsUI = () => {
               <h1> {singData.data.description.slice(0, 150)}</h1>
             </div>
 
-            <h1 className="bg-blue-500 w-fit mx-auto mt-2">
+            <h1 className="bg-blue-800 w-fit mx-auto mt-2 p-1 hover:bg-purple-950 text-white duration-200 rounded-md">
               <NavLink to={"/products"}>Explore more</NavLink>
-        
             </h1>
           </div>
         </div>

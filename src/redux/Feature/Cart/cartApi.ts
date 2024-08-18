@@ -47,6 +47,15 @@ const cartApi = baseApi.injectEndpoints({
         };
       },
     }),
+    deleteUserCartData: builder.mutation({
+      query: ({ id, user }) => {
+        return {
+          url: `deleteCheckout/${id}/${user}`,
+          method: "DELETE",
+        };
+      },
+    }),
+    
   }),
 });
 export const {
@@ -56,4 +65,5 @@ export const {
   useDeleteCartMutation,
   useIncrementMutation,
   useDecrementMutation,
+  useDeleteUserCartDataMutation,
 } = cartApi;

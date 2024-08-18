@@ -11,15 +11,15 @@ const checkoutApi = baseApi.injectEndpoints({
         };
       },
     }),
-    getUserCheckoutData:builder.query({
-      query:(user)=>{
-        return{
-          url:`/get-checkout/${user}`,
-          method:"GET"
-        }
-      }
-    })
+    getUserCheckoutData: builder.query({
+      query: (user) => {
+        return {
+          url: `/get-checkout/${user}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const {useCheckoutMutation,useGetUserCheckoutDataQuery} = checkoutApi;
+export const { useCheckoutMutation, useGetUserCheckoutDataQuery } = checkoutApi;

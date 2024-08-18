@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../redux/hooks";
 import {
   useDecrementMutation,
-  useDeleteCartMutation,
+  useDeleteUserCartDataMutation,
   useGetUserCartQuery,
   useIncrementMutation,
 } from "../../../redux/Feature/Cart/cartApi";
@@ -10,43 +10,44 @@ import { TCart } from "../../../@types/carts";
 import { RootState } from "../../../redux/store";
 import { useCheckoutMutation } from "../../../redux/Feature/checkout/checkoutApi";
 import { Link } from "react-router-dom";
+import { BeatLoader } from "react-spinners";
 
 const CartUI = () => {
   const loginUser = useAppSelector((state: RootState) => state.auth.user);
   const { data, refetch } = useGetUserCartQuery(loginUser!.email);
-  const [deleteCart] = useDeleteCartMutation();
-  const [increment] = useIncrementMutation();
-  const [decrement] = useDecrementMutation();
+  const [deleteUserCartData, { reset }] = useDeleteUserCartDataMutation();
+  const [increment, { isLoading: incLoading }] = useIncrementMutation();
+  const [decrement, { isLoading: decLoading }] = useDecrementMutation();
   const [checkout] = useCheckoutMutation();
   const [cart, setCart] = useState<TCart[]>([]);
   const [deleteModal, setDeleteModal] = useState("");
-  const handleIncrement = (index: number, id: string) => {
-    increment(id);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
+
+  const handleIncrement = async (index: number, id: string) => {
+    setLoadingProductId(id);
+    await increment(id);
     refetch();
     const updatedCart = [...cart];
     updatedCart[index].quantity++;
     setCart(updatedCart);
+    setLoadingProductId(null);
   };
 
-  const handleDecrement = (index: any, id: string) => {
-    decrement(id);
+  const handleDecrement = async (index: number, id: string) => {
+    setLoadingProductId(id);
+    await decrement(id);
     const updatedCart = [...cart];
     if (updatedCart[index].quantity > 1) {
       updatedCart[index].quantity--;
       refetch();
-    } else {
-      // Handle removing item from cart if quantity reaches 0
-      // updatedCart.splice(index, 1);
     }
     setCart(updatedCart);
+    setLoadingProductId(null);
   };
 
   const handleRemoveItem = (index: any) => {
-    // const updatedCart = [...cart];
-    // updatedCart.splice(index, 1);
-    // setCart(updatedCart);
     setDeleteModal(index);
-    refetch()
+    refetch();
   };
 
   useEffect(() => {
@@ -65,39 +66,49 @@ const CartUI = () => {
       }))
     );
   }, [data?.data]);
+
   const Price = cart?.reduce((pre, curr) => pre + curr.price, 0);
   const quantity = cart?.reduce((pre, curr) => pre + curr.quantity, 0);
 
-  const deleteCartFormBD = (id: string) => {
-    deleteCart(id);
+  const deleteCartFormBD = async (id: string) => {
+    await deleteUserCartData({ id, user: loginUser?.email });
     refetch();
+    reset();
   };
+
   const checkoutHandler = () => {
     const checkoutData = [...cart];
-
     checkout(checkoutData);
   };
+
   return (
     <div className="">
       {cart?.length ? (
-        <div className="cart-container p-3 relative">
+        <div className="cart-container p-3 ]">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-[90%] mx-auto">
             {cart?.map((item, index) => (
               <div
                 key={item.id}
-                className="cart-item rounded-md border p-2 mx-a bg-gray-300"
+                className="cart-item rounded-md border p-2 bg-[#EEEDEB] relative"
               >
                 <img
-                  className="w-[100px] mx-auto"
+                  className="w-[100px] mx-auto "
                   src={item.image}
                   alt={item.name}
                 />
-                <div className="item-details  text-center">
+
+                {loadingProductId === item.id && (
+                  <span className="absolute top-[20%] left-[30%] bg-[#F8F6E3] pt-1 w-fit px-1 rounded-2xl">
+                    <BeatLoader color="#FF6868" />
+                  </span>
+                )}
+                <div className="item-details text-center">
                   <h3>{item.name}</h3>
                   <p>Price: ${item.price}</p>
 
                   <div className="flex items-center gap-4 justify-center ">
                     <button
+                      disabled={decLoading || item.quantity===1}
                       className="text-2xl"
                       onClick={() => handleDecrement(index, item._id)}
                     >
@@ -105,7 +116,9 @@ const CartUI = () => {
                     </button>
                     <span>{item.quantity}</span>
                     <button
-                      disabled={item.quantity === item.productQuantity}
+                      disabled={
+                        item.quantity === item.productQuantity || incLoading
+                      }
                       className="text-2xl"
                       onClick={() => handleIncrement(index, item._id)}
                     >
@@ -117,7 +130,7 @@ const CartUI = () => {
                     Remove
                   </button>
                   {deleteModal === item.id && (
-                    <div className="modal absolute top-[300px] left-[750px] flex items-center gap-3 bg-slate-800 text-white p-2 rounded-md">
+                    <div className="modal absolute top-[30%]  flex items-center gap-3 bg-slate-800 text-white p-2 rounded-md">
                       <button onClick={() => deleteCartFormBD(item._id)}>
                         Sure
                       </button>

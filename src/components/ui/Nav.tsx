@@ -47,12 +47,7 @@ const Nav = () => {
           >
             Product Management
           </NavLink>
-          <NavLink
-            className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-            to={"productsDetails"}
-          >
-            Product Details
-          </NavLink>
+
           <NavLink
             className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
             to={"/cart"}
@@ -84,11 +79,11 @@ const Nav = () => {
           {user ? (
             <button onClick={() => handelLogOut()}>logout</button>
           ) : (
-          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <NavLink to={"/login"}>Login</NavLink>
               <h1>/</h1>
               <NavLink to={"/singup"}>Registration</NavLink>
-          </div>
+            </div>
           )}
         </div>
       )}
@@ -101,11 +96,15 @@ const Nav = () => {
               color="white"
             ></IoCloseCircleOutline>
           ) : (
-            <CiMenuFries  size={30} color="white"></CiMenuFries>
+            <CiMenuFries size={30} color="white"></CiMenuFries>
           )}
         </span>
         <div className="flex items-center gap-6 cursor-pointer">
-          <FaUser color="white" onClick={() => setAuthBtn(!authBtn)} size={20} />
+          <FaUser
+            color="white"
+            onClick={() => setAuthBtn(!authBtn)}
+            size={20}
+          />
         </div>
       </div>
       {open && (
