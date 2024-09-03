@@ -22,7 +22,7 @@ const CheckoutUI = () => {
   }, [data, refetch]);
 
   const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
+
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [cashOnDelivery, setCashOnDelivery] = useState(false);
@@ -85,7 +85,7 @@ const CheckoutUI = () => {
               id="email"
               value={loginUser?.email}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              readOnly
             />
           </div>
           <div className="mb-4">
@@ -131,7 +131,7 @@ const CheckoutUI = () => {
               />
               <label htmlFor="payment">Cash on delivery</label>
             </div>
-            <h1>Total Cost: ${Price * quantity || 0}</h1>
+            <h1>Total Cost: ${(Price * quantity || 0).toFixed(2)}</h1>
           </div>
 
           <div className="text-center">

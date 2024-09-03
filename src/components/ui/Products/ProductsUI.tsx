@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoMdSearch } from "react-icons/io";
 
 import {
@@ -15,7 +15,7 @@ import { TCategories } from "../../../@types/categories";
 
 const ProductsUI = () => {
   const { id } = useParams();
-
+  const navigate=useNavigate()
   const { data: maxPrice } = useGetMaxPriceQuery(undefined);
 
   const [products, setProducts] = useState([]);
@@ -51,6 +51,7 @@ const ProductsUI = () => {
   };
 
   const handelClear = () => {
+    navigate('/products')
     setModal(false);
     refetch();
     setProducts(product?.data);
@@ -197,7 +198,7 @@ const ProductsUI = () => {
             <div className="text-center">
               <h1>Name: {product.name}</h1>
               <h1 className="mt-1 mb-1">Price: ${product.price}</h1>
-              <button className="bg-blue-500 p-1 text-white rounded-lg">
+              <button onClick={()=>navigate(`/productsDetails/${product._id}`)} className="bg-blue-500 p-1 text-white rounded-lg">
                 View Details
               </button>
             </div>

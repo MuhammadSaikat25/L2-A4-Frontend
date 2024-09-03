@@ -138,12 +138,6 @@ const Nav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-              to={"productsDetails"}
-            >
-              Product Details
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
               to={"/cart"}
             >
               Cart
@@ -156,7 +150,7 @@ const Nav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) => (isActive ? "text-yellow-300" : "")}
-              to={"/About-Page"}
+              to={"/about-us"}
             >
               About Us
             </NavLink>
