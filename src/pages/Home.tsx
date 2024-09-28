@@ -1,7 +1,6 @@
 import Banner from "../components/ui/Home/Banner";
 import CatagoriesUl from "../components/ui/Home/CatagoriesUl";
 import Image from "../components/ui/Home/image/Image";
-
 import { useGetProductsQuery } from "../redux/Feature/products/productsApi";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +47,38 @@ const Home = () => {
         </>
       </div>
       <Image />
+
+      <div className="flex flex-col items-center justify-center gap-4 bg py-[170px] relative">
+        <div className="bg-slate-700 flex flex-col gap-4 p-2 items-center justify-center bg-opacity-70 absolute h-full top-0 text-gray-100">
+          <div className="lg:w-[40%] text-left">
+            <h1 className=" font-semibold text-[16px]">
+              1 Enhanced Performance
+            </h1>
+            <div className="">
+              <div className="">
+                <p>
+                  {" "}
+                  Our premium-quality fitness equipment is designed to optimize
+                  your workout performance. Whether you’re lifting weights,
+                  doing cardio, or practicing yoga, our products ensure better
+                  form, endurance, and results.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="lg:w-[40%] text-right">
+            <p className="tw font-semibold text-[16px]">
+              2 Durability & Long-lasting Quality
+            </p>
+            <div className="">
+              nvest in fitness gear that stands the test of time. Built from
+              high-quality materials, our equipment is designed to endure even
+              the most intense training sessions, providing you with reliable
+              support for years.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

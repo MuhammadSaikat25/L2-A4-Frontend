@@ -50,7 +50,7 @@ const cartApi = baseApi.injectEndpoints({
     deleteUserCartData: builder.mutation({
       query: ({ id, user }) => {
         return {
-          url: `deleteCheckout/${id}/${user}`,
+          url: `/deleteCheckout/${id}/${user}`,
           method: "DELETE",
         };
       },
